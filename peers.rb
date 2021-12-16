@@ -17,7 +17,7 @@ before do
 end
 
 get "/" do
-  return "Hello, Peers!"
+  return "Hello, Peers again!"
 end
 
 get "/users" do
