@@ -17,7 +17,7 @@ before do
 end
 
 get "/" do
-  return "Hello, Peers again!"
+  erb :index
 end
 
 get "/users" do
