@@ -19,4 +19,3 @@
 
 ### With Heroku
 1) Run `$ git push heroku [branch-name]`
-
