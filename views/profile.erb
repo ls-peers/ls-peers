@@ -1,0 +1,56 @@
+<header>
+  <a href="/">
+    <img src="/images/trapezoid_logo.svg">
+  </a>
+  <div id="top-menu">
+    <nav class="horizontal-bar buttons">
+      <ul>
+        <li><a href="#">Find peers</a></li>
+        <li><a href="#">Log out</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main>
+  <div id="profile-title">
+    <img id="profile-image" src="/images/portrait_circle.svg">
+    <h4 id="profile-name"><%= @user.firstname %> <%= @user.lastname %></h4>
+  </div>
+  <div id="profile-details">
+    <dl id="line-fields">
+      <dt>Slack:</dt>
+      <dd><%= @user.slackname %></dd>
+
+      <dt>Track:</dt>
+      <dd><%= @user.track %></dd>
+
+      <dt>Course:</dt>
+      <dd><%= @user.course %></dd>
+
+      <dt>Timezone:</dt>
+      <dd><%= @user.timezone %></dd>
+    </dl>
+    <div id="block-fields">
+      <dt>About me</dt>
+      <dd>
+        <p>
+          <%= @user.about_me %>
+        </p>
+      </dd>
+
+      <dt>Interested in</dt>
+      <dd>
+        <p>
+          TODO!
+        </p>
+      </dd>
+    </div>
+  </div>
+  <div id="profile-edit">
+    <nav class="horizontal-bar buttons">
+      <ul>
+        <li><a href="#">Edit profile</a></li>
+      </ul>
+    </nav>
+  </div>
+</main>

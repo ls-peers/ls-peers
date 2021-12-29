@@ -18,7 +18,7 @@ INSERT INTO users (id, firstname, lastname, slackname, email, password,
   VALUES ('fc10b881-d9a0-4ab1-a6fd-a102db188f49', 'Scott', 'Graham', 'Scott', 'scttgrhm7@gmail.com', 'ldfgkj78%^&appdKO039*',
           2, 1, 3, 'Finishing LS and planning to do capstone in May. I like surfing and thick grey socks'),
          ('fc10b881-d9a0-4ab1-a6fd-a102db188f50', 'Alonso', 'Lobato', 'Alonso Lobato', 'alonzilj@gmail.com', 'ppdK78%^&aO039*ldfgkj',
-          1, 1, 1, 'About to finish back-end portion of Ruby track. I like canadian Christmas trees');
+          1, 1, 1, 'Finished back-end portion of Ruby track! I like canadian Christmas trees');
 
 INSERT INTO preferences (preference, category)
   VALUES ('Preparing for a written assessment', 'Assessment'),
