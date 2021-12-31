@@ -24,3 +24,7 @@
 ### Locally
 1) `$ psql lspeers`
 2) `lspeers=# \i [path to .sql]`
+
+### Heroku
+1) `$ heroku pg:psql -a lspeers`
+2) `lspeers::DATABASE=> \i [path to .sql]`
