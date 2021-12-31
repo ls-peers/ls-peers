@@ -19,3 +19,8 @@
 
 ### With Heroku
 1) Run `$ git push heroku [branch-name]`
+
+## Updating database
+### Locally
+1) `$ psql lspeers`
+2) `lspeers=# \i [path to .sql]`

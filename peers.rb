@@ -1,4 +1,5 @@
 require "sinatra"
+require "sinatra/content_for"
 require "tilt/erubis"
 
 require_relative "database_persistence"
@@ -23,4 +24,11 @@ end
 get "/users" do
   @user = @storage.first_user()
   return "#{@user["firstname"]} (id: #{@user["pkey"]}) is a user"
+end
+
+get "/test/profile/:id" do
+  user_id = params[:id]
+  @user = @storage.user_by_id(user_id)
+
+  erb :profile, layout: :footer_layout
 end

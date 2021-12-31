@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+  height="auto"
+  preserveAspectRatio="xMidYMid meet"
+  viewBox="0 0 80 35">
+  <style>
+    .small { font: 11px sans-serif; }
+    .large { font: 24px sans-serif; }
+  </style>
+  <path d="M10,0 L40,0 L50,35 L0,35z"
+    fill='#6666FF'
+  />
+  <text x="5" y="26" class="small">LS</text>
+  <text x="17" y="26" class="large">Peers</text>
+</svg>
