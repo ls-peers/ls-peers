@@ -22,9 +22,9 @@ class DatabasePersistence
   def user_by_id(id)
     sql = <<~SQL
       SELECT
-        u.slackname,
-        u.firstname,
-        u.lastname,
+        u.slack_name,
+        u.full_name,
+        u.preferred_name,
         u.about_me,
         t.name AS track,
         c.code AS course,
@@ -41,32 +41,72 @@ class DatabasePersistence
     tuple_to_user(tuple)
   end
 
-  def first_user()
+  def check_email(email) 
     sql = <<~SQL
-      SELECT * FROM users
+      SELECT id FROM users 
+      WHERE email = $1
     SQL
 
-    result = query(sql)
+    result = query(sql, email)
 
     return nil if result.ntuples == 0
-    tuple = result.first
+    result.first
+  end
+
+  def add_new_user(email, password, full_name)
+    sql = <<~SQL
+      INSERT INTO users(email, password, full_name)
+        VALUES($1, $2, $3)
+    SQL
+
+    query(sql, email, password, full_name)
+  end
+
+  def retrieve_user_credentials(id) 
+    sql = <<~SQL
+      SELECT email, password
+      FROM users
+      WHERE id = $1
+    SQL
+    result = query(sql, id)
+
+    return nil if result.ntuples == 0
+    result.first 
+  end
+
+  def update_user_data(id, preferred_name, slack_name, course, track, timezone, about_me)
+    sql = <<~SQL
+      UPDATE users
+        SET preferred_name = $2, slack_name = $3, 
+            course_id = $4, track_id = $5, 
+            timezone_id = $6, about_me = $7
+        WHERE id = $1
+    SQL
+
+    query(sql, id, preferred_name, slack_name, course, track, timezone, about_me)
+  end
+
+  def update_user_preferences(id, *preferences)
+    sql = <<~SQL
+    INSERT INTO users_preferences(user_id, preference_id)
+      VALUES($1, unnest(ARRAY$2))                        -- unnest(ARRAY[1,2]) -> Expands an array into a set of rows. The array's elements are read out in storage order.
+    SQL
+    query(sql, id, preferences)
   end
 
   private
 
   def tuple_to_user(tuple)
-    slackname = tuple["slackname"]
-    firstname = tuple["firstname"]
-    lastname = tuple["lastname"]
+    slack_name = tuple["slack_name"]
+    preferred_name = tuple["preferred_name"]
     about_me = tuple["about_me"]
     track = tuple["track"]
     course = tuple["course"]
     timezone = tuple["timezone"]
 
     User.new(
-      slackname,
-      firstname,
-      lastname,
+      slack_name,
+      preferred_name,
       about_me,
       track,
       course,
