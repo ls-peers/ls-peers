@@ -14,12 +14,12 @@
 <main>
   <div id="profile-title">
     <img id="profile-image" src="/images/portrait_circle.svg">
-    <h4 id="profile-name"><%= @user.firstname %> <%= @user.lastname %></h4>
+    <h4 id="profile-name"><%= @user.full_name %> <%= @user.preferred_name %></h4>
   </div>
   <div id="profile-details">
     <dl id="line-fields">
       <dt>Slack:</dt>
-      <dd><%= @user.slackname %></dd>
+      <dd><%= @user.slack_name %></dd>
 
       <dt>Track:</dt>
       <dd><%= @user.track %></dd>

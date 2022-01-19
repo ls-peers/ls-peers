@@ -22,8 +22,8 @@ get "/" do
   erb :index
 end
 
-get "/test/profile/:id" do
-  user_id = params[:id]
+get "/test/profile/:id" do                 # Test route, delete when done with profile route (also check db_persistence for potential duplications...) 
+  user_id = params[:id]                    
   @user = @storage.user_by_id(user_id)
 
   erb :profile, layout: :footer_layout
@@ -38,7 +38,7 @@ def encrypt_password(password)
 end
 
 def email_in_use?(email)
-  !!@storage.check_email(email)
+  !!@storage.get_user_id_by_email(email)
 end
 
 def valid_email?(email)
@@ -46,11 +46,13 @@ def valid_email?(email)
   (email.split('@').size > 1) && (email.split('.').size > 1)
 end
 
+# ------------
+
 get "/signup" do
   erb :signup_test, layout: :footer_layout
 end
 
-post "/signup" do
+post "/signup" do                                   # No bugs, running well, tested with pry
   email = params[:email]
   password = params[:password]
   full_name = params[:full_name]
@@ -77,16 +79,22 @@ end
 
 # ----- LOGIN HELPER METHODS (move somewhere else when done)
 
-def valid_credentials?(id, email, password)
-  credentials = retrieve_user_credentials(id)
+def valid_credentials?(email, password)
+  @password = @storage.get_password_by_email(email)
 
-  if credentials
-    decrypted_password = BCrypt::Password.new(credentials["password"])
-    credentials["email"] == email && decrypted_password == password
+  if @password
+    decrypted_password = BCrypt::Password.new(@password)
+    decrypted_password == password
   else
     false
   end
 end
+
+def is_user_login?(id, email)
+  id == @storage.get_user_id_by_email(email)
+end
+
+# ------------
 
 get "/login" do
   erb :login_test, layout: :footer_layout
@@ -95,9 +103,11 @@ end
 post "/login" do
   email = params[:email]
   password = params[:password]
-
+  id = @storage.get_user_id_by_email(email)
   if valid_credentials?(email, password)
-    puts "Login correctly"
+    puts "Login completed"
+                                     # WORKING UP TO HERE      ----> the return value of @storage.user_by_id(id) is nil
+    @user = @storage.user_by_id(id)                   # RIGHT HERE IS THE BUG - Before I used get_user_data_by_email with same error problem...
     redirect "/profile"
   else
     puts "Sorry, your credentials don't exist in our database. Please try again or create an account."
@@ -106,14 +116,24 @@ post "/login" do
 end
 
 get "/profile" do
-  # Implement details
+  @user_id = @user.id
+  @user_email = @user.email
+  if is_user_login?(@user_id, @user_email)
+    @user = @storage.get_user_data_by_email(email)   # This get_user_data... method returns the same error as the user_by_id used above
+    erb :profile, layout: :footer_layout
+  else
+    puts "Sorry, you must be login to view this content"
+    erb :login_test, layout: :footer_layout
+  end
 end
+
+# For now we can forget about the code from this point down
 
 get "/profile/edit" do
   erb :profile_edit_test, layout: :footer_layout
 end
 
-post "/profile/edit" do     # Shall we make this a PUT route instead (see Notions comments on routes section)
+post "/profile/edit" do                # Shall we make this a PUT route instead (see Notions comments on routes section)
   user_id = params[:id]
   preferred_name = params[:preferred_name]
   slack_name = params[:slack_name]
