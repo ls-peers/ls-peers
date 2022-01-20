@@ -22,8 +22,8 @@ get "/" do
   erb :index
 end
 
-get "/test/profile/:id" do                 # Test route, delete when done with profile route (also check db_persistence for potential duplications...) 
-  user_id = params[:id]                    
+get "/test/profile/:id" do                 # Test route, delete when done with profile route (also check db_persistence for potential duplications...)
+  user_id = params[:id]
   @user = @storage.user_by_id(user_id)
 
   erb :profile, layout: :footer_layout
@@ -33,7 +33,7 @@ end
 
 def encrypt_password(password)
   BCrypt::Password.create(password).to_s
-  # BCrypt#create method returns a bunch of values for a new password (version, cost, salt...) 
+  # BCrypt#create method returns a bunch of values for a new password (version, cost, salt...)
   # Appending '.to_s' returns only the wanted encrypted password and not the rest of values
 end
 
@@ -63,7 +63,7 @@ post "/signup" do                                   # No bugs, running well, tes
   elsif !valid_email?(email)
     puts "Please enter a valid email address"
     erb :signup_test, layout: :footer_layout
-  elsif password.size == 0 
+  elsif password.size == 0
     puts "Please enter a valid email password"
     erb :signup_test, layout: :footer_layout
   elsif full_name.size == 0
@@ -83,6 +83,7 @@ def valid_credentials?(email, password)
   @password = @storage.get_password_by_email(email)
 
   if @password
+    binding.pry
     decrypted_password = BCrypt::Password.new(@password)
     decrypted_password == password
   else
@@ -103,23 +104,23 @@ end
 post "/login" do
   email = params[:email]
   password = params[:password]
-  id = @storage.get_user_id_by_email(email)
+  @user = @storage.get_user_by_email(email)
+  binding.pry
   if valid_credentials?(email, password)
     puts "Login completed"
                                      # WORKING UP TO HERE      ----> the return value of @storage.user_by_id(id) is nil
-    @user = @storage.user_by_id(id)                   # RIGHT HERE IS THE BUG - Before I used get_user_data_by_email with same error problem...
-    redirect "/profile"
+    # @user = @storage.user_by_id(id)                   # RIGHT HERE IS THE BUG - Before I used get_user_by_email with same error problem...
+    redirect "/profile/#{@user.id}"
   else
     puts "Sorry, your credentials don't exist in our database. Please try again or create an account."
     erb :login_test, layout: :footer_layout
   end
 end
 
-get "/profile" do
-  @user_id = @user.id
-  @user_email = @user.email
-  if is_user_login?(@user_id, @user_email)
-    @user = @storage.get_user_data_by_email(email)   # This get_user_data... method returns the same error as the user_by_id used above
+get "/profile/:id" do
+  @user_id = @params[:id]
+  @user = @storage.user_by_id(@user_id)
+  if is_user_login?(@user.id, @user.email)
     erb :profile, layout: :footer_layout
   else
     puts "Sorry, you must be login to view this content"
@@ -148,7 +149,7 @@ post "/profile/edit" do                # Shall we make this a PUT route instead 
     erb :profile_edit_test, layout: :footer_layout
   elsif slack_name.size == 0
     puts "Please enter a valid email slack name"
-    erb :profile_edit_test, layout: :footer_layout    
+    erb :profile_edit_test, layout: :footer_layout
   elsif timezone.size == 0
     puts "Please enter a valid email timezone"
     erb :profile_edit_test, layout: :footer_layout
@@ -164,11 +165,11 @@ post "/profile/edit" do                # Shall we make this a PUT route instead 
   else
     @storage.update_user_data(user_id, preferred_name, slack_name, timezone, course, track, about_me)
     @storage.update_user_preferences(user_id, preferences)
-    erb :profile, layout: :footer_layout 
+    erb :profile, layout: :footer_layout
   end
 end
 
 post "/logout" do
   # TBD logout implementation
-  redirect "/"  
+  redirect "/"
 end
