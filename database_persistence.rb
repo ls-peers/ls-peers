@@ -20,8 +20,44 @@ class DatabasePersistence
     @db.exec_params(statement, params)
   end
 
-  # ------ defined by scott to display test profile "/test/profile/:id" -> delete when not needed; but right now is in use in peers.rb
-  def user_by_id(id)                        # BUG -> Tested with pry. See results below
+  # ------ retrieves user id by provided user email ------------ NO BUGS
+  def get_id_by_email(email)
+    sql = <<~SQL
+      SELECT id
+      FROM users
+      WHERE email = $1
+    SQL
+
+    result = query(sql, email)
+    return nil if result.ntuples == 0
+    result.first["id"]                      # "e45f23ec-e54f..." | if used as 'result.first' returns {"id"=>"e45f23ec-e54f..."}
+  end
+
+  # ------ adds new record to db, using data provided by user ------------ NO BUGS
+  def add_new_user(email, password, full_name)       
+    sql = <<~SQL
+      INSERT INTO users(email, password, full_name)
+      VALUES($1, $2, $3)
+    SQL
+
+    query(sql, email, password, full_name)
+  end
+
+  # ------- retrieves user password by provided email ------------ NO BUGS
+  def get_password_by_email(email)
+    sql = <<~SQL
+      SELECT password
+      FROM users
+      WHERE email = $1
+    SQL
+
+    result = query(sql, email)
+    return nil if result.ntuples == 0
+    result.first["password"]                # "$2a$12$W6A2..." | if used as 'result.first' returns {"password"=>"$2a$12$W6A2....."}
+  end
+
+  # ------ retrieves all user data by provided user id
+  def get_user_by_id(id)                        
     sql = <<~SQL
       SELECT
         u.id,
@@ -41,49 +77,13 @@ class DatabasePersistence
       WHERE u.id = $1
     SQL
 
-    result = query(sql, id)               # #<PG::Result:0x00007fba0e8e3d28 status=PGRES_TUPLES_OK ntuples=0 nfields=7 cmd_tuples=0>
-    tuple = result.first                  # nil
+    result = query(sql, id)
+    tuple = result.first
     tuple_to_user(tuple)
   end
 
-  # ------ takes an email provided by user and returns the id in user table that corresponds with that email
-  def get_user_id_by_email(email)              # No bugs -> Tested with binding.pry. See results in comments below
-    sql = <<~SQL
-      SELECT id
-      FROM users
-      WHERE email = $1
-    SQL
-
-    result = query(sql, email)                 # #<PG::Result:0x00007fba0d8d69d0 status=PGRES_TUPLES_OK ntuples=2 nfields=1 cmd_tuples=2>
-    return nil if result.ntuples == 0
-    result.first["id"]                         # "e45f23ec-e54f-4867-826a-01d2aa08fbb6" ---- if using 'result.first' it returns {"id"=>"e45f23ec-e54f-4867-826a-01d2aa08fbb6"}
-  end
-
-  # ------ adds new record to db, using data provided by user
-  def add_new_user(email, password, full_name)        # No bugs -> Tested with binding pry. See results in commend below
-    sql = <<~SQL
-      INSERT INTO users(email, password, full_name)
-      VALUES($1, $2, $3)
-    SQL
-
-    query(sql, email, password, full_name)            # #<PG::Result:0x00007fba0d46aae0 status=PGRES_COMMAND_OK ntuples=0 nfields=0 cmd_tuples=1>
-  end
-
-  # ------- retrieves user password that correspond with given email address
-  def get_password_by_email(email)                    # No bugs -> Tested with binding pry. See results in commend below
-    sql = <<~SQL
-      SELECT password
-      FROM users
-      WHERE email = $1
-    SQL
-
-    result = query(sql, email)                        # #<PG::Result:0x00007fba0cc91918 status=PGRES_TUPLES_OK ntuples=2 nfields=1 cmd_tuples=2>
-    return nil if result.ntuples == 0
-    result.first["password"]                          # "$2a$12$W6A25Rf6jES5UNNvTKlEheDQ71.uYV4TLK.eDIaW.8MiNKxBnRHVi" || if only result.first returns {"password"=>"$2a$12$W6A25Rf6jES5UNNvTKlEheDQ71.uYV4TLK.eDIaW.8MiNKxBnRHVi"}
-  end
-
-  # -------- retrieves all fields in db users that correspond with an email --> at the moment not in use in peers.rb (using user_by_id instead)
-  def get_user_by_email(email)                   # HAS A BUG - tuple returns nil; right now isn't in use, I'm using 'user_by_id' instead
+  # -------- retrieves all user data by provided user email
+  def get_user_by_email(email)
     sql = <<~SQL
       SELECT
         u.id,
@@ -104,28 +104,11 @@ class DatabasePersistence
     SQL
 
     result = query(sql, email)
-    tuple = result.first                              # for some reason tuple is nil here
-    # binding.pry
+    tuple = result.first
     tuple_to_user(tuple)
   end
 
-  # ------ retrieves email and password based on given email (provided by user in form) --> not in use at the moment
-  # def get_user_data(email)
-  #   sql = <<~SQL
-  #     SELECT email, password
-  #     FROM users
-  #     WHERE email = $1
-  #   SQL
-
-  #   result = query(sql, email)
-
-  #   return nil if result.ntuples == 0
-  #   tuple = result.first
-  #   tuple_to_user(tuple)                # User entity with the info we have (the info we don't provide will be assigned to default values *see user.rb)
-  # end
-
-
-  # ------ updates user data; not in use for now but will be call in 'profile/edit' route
+  # ------ updates user data based on user id | called in 'profile/edit' route
   def update_user_data(id, preferred_name, slack_name, course, track, timezone, about_me)
     sql = <<~SQL
       UPDATE users
@@ -138,7 +121,7 @@ class DatabasePersistence
     query(sql, id, preferred_name, slack_name, course, track, timezone, about_me)
   end
 
-  # ------ updates user data; not in use for now but will be call in 'profile/edit' route
+  # ------ updates user preferences table based on user id | called in 'profile/edit' route
   def update_user_preferences(id, *preferences)
     sql = <<~SQL
     INSERT INTO users_preferences(user_id, preference_id)
@@ -149,24 +132,7 @@ class DatabasePersistence
 
   private
 
-  # ----- converts the query return into a user entity --> original version created by Scott
-  # def tuple_to_user(tuple)
-  #   id = tuple["id"]
-  #   full_name = tuple["full_name"]           # The error is because the PG::Result returns no tuples (tuple is nil), so there is no way to do tuple["something"]
-  #   slack_name = tuple["slack_name"]         # This line returns an error (following lines would too) -> undefined method `[]' for nil:NilClass
-  #   preferred_name = tuple["preferred_name"]
-  #   about_me = tuple["about_me"]
-  #   track = tuple["track"]
-  #   course = tuple["course"]
-  #   timezone = tuple["timezone"]
-
-  #   User.new(
-  #     id,
-  #     full_name
-  #   )
-  # end
-
-  def tuple_to_user(tuple)          # backup copy, with all data from db user --> Created by Alonso based on Scott's version
+  def tuple_to_user(tuple)
     id = tuple["id"]
     email = tuple["email"]
     password = tuple["password"]
@@ -178,6 +144,6 @@ class DatabasePersistence
     track = tuple["track"]
     timezone = tuple["timezone"]
 
-    User.new(id, email, password, full_name)
+    User.new(id, email, password, full_name)  # Add -> preferred_name, slack_name, about_me, course, track, timezone
   end
 end

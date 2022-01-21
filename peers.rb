@@ -18,18 +18,7 @@ before do
   @storage = DatabasePersistence.new()
 end
 
-get "/" do
-  erb :index
-end
-
-get "/test/profile/:id" do                 # Test route, delete when done with profile route (also check db_persistence for potential duplications...)
-  user_id = params[:id]
-  @user = @storage.user_by_id(user_id)
-
-  erb :profile, layout: :footer_layout
-end
-
-# ----- SIGNUP HELPER METHODS (move somewhere else when done)
+# ----- SIGNUP HELPER METHODS
 
 def encrypt_password(password)
   BCrypt::Password.create(password).to_s
@@ -38,7 +27,7 @@ def encrypt_password(password)
 end
 
 def email_in_use?(email)
-  !!@storage.get_user_id_by_email(email)
+  !!@storage.get_id_by_email(email)
 end
 
 def valid_email?(email)
@@ -46,19 +35,48 @@ def valid_email?(email)
   (email.split('@').size > 1) && (email.split('.').size > 1)
 end
 
-# ------------
+# ----- LOGIN HELPER METHODS
+
+def valid_credentials?(email, password)
+  @password = @storage.get_password_by_email(email)
+
+  if @password
+    decrypted_password = BCrypt::Password.new(@password)
+    decrypted_password == password
+  else
+    false
+  end
+end
+
+def is_user_login?(id, email)
+  id == @storage.get_id_by_email(email)
+end
+
+# ----- ROUTES
+
+get "/" do
+  erb :index
+end
+
+# Test route, delete when done with profile route
+get "/test/profile/:id" do
+  user_id = params[:id]
+  @user = @storage.get_user_by_id(user_id)
+
+  erb :profile, layout: :footer_layout
+end
 
 get "/signup" do
   erb :signup_test, layout: :footer_layout
 end
 
-post "/signup" do                                   # No bugs, running well, tested with pry
+post "/signup" do
   email = params[:email]
   password = params[:password]
   full_name = params[:full_name]
 
   if email_in_use?(email)
-    puts "An account with this email already exists, please login"     # Msg to console - flash implementation required
+    puts "An account with this email already exists, please login"     # Temp. msg to console -> flash msg to be implemented
     erb :signup_test, layout: :footer_layout
   elsif !valid_email?(email)
     puts "Please enter a valid email address"
@@ -77,26 +95,6 @@ post "/signup" do                                   # No bugs, running well, tes
   end
 end
 
-# ----- LOGIN HELPER METHODS (move somewhere else when done)
-
-def valid_credentials?(email, password)
-  @password = @storage.get_password_by_email(email)
-
-  if @password
-    binding.pry
-    decrypted_password = BCrypt::Password.new(@password)
-    decrypted_password == password
-  else
-    false
-  end
-end
-
-def is_user_login?(id, email)
-  id == @storage.get_user_id_by_email(email)
-end
-
-# ------------
-
 get "/login" do
   erb :login_test, layout: :footer_layout
 end
@@ -104,12 +102,10 @@ end
 post "/login" do
   email = params[:email]
   password = params[:password]
-  @user = @storage.get_user_by_email(email)
-  binding.pry
+
   if valid_credentials?(email, password)
+    @user = @storage.get_user_by_email(email)
     puts "Login completed"
-                                     # WORKING UP TO HERE      ----> the return value of @storage.user_by_id(id) is nil
-    # @user = @storage.user_by_id(id)                   # RIGHT HERE IS THE BUG - Before I used get_user_by_email with same error problem...
     redirect "/profile/#{@user.id}"
   else
     puts "Sorry, your credentials don't exist in our database. Please try again or create an account."
@@ -117,9 +113,15 @@ post "/login" do
   end
 end
 
+get "/logout" do         # To be implemented
+  # So far it just redirects to "/". I tried with '@storage.disconnet' but raises an error
+  puts "Logout complete"
+  redirect "/"
+end
+
 get "/profile/:id" do
-  @user_id = @params[:id]
-  @user = @storage.user_by_id(@user_id)
+  user_id = params[:id]
+  @user = @storage.get_user_by_id(user_id)
   if is_user_login?(@user.id, @user.email)
     erb :profile, layout: :footer_layout
   else
@@ -127,8 +129,6 @@ get "/profile/:id" do
     erb :login_test, layout: :footer_layout
   end
 end
-
-# For now we can forget about the code from this point down
 
 get "/profile/edit" do
   erb :profile_edit_test, layout: :footer_layout
@@ -167,9 +167,4 @@ post "/profile/edit" do                # Shall we make this a PUT route instead 
     @storage.update_user_preferences(user_id, preferences)
     erb :profile, layout: :footer_layout
   end
-end
-
-post "/logout" do
-  # TBD logout implementation
-  redirect "/"
 end
