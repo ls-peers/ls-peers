@@ -15,7 +15,7 @@
 <main>
   <h2>Complete your profile</h2>
   
-  <form method="post" action="/profile/<%= @user.id %>">                <%#Add new profile picture to be implemented%>
+  <form method="post" action="/profile/<%= @user.id %>/edit">                <%#Add new profile picture to be implemented%>
     <div>
       <label for="preferred_name"> Preferred name
         <input name="preferred_name" id="preferred_name" value="<%= params[:preferred_name] %>"/>
@@ -27,17 +27,17 @@
       </label>
     </div>
     <div>
-      <label for="track"> Track                                    <%#Make this a list to choose from; only choice only%>
+      <label for="track"> Track                                    <%#Make this a list to choose from; one choice only%>
         <input type="track" id="track" name="track" value="<%= params[:track] %>"/>
       </label>
     </div>
     <div>
-      <label for="course"> Course                                  <%#Make this a list to choose from; only choice only%>
+      <label for="course"> Course                                  <%#Make this a list to choose from; one choice only%>
         <input type="course" id="course" name="course" value="<%= params[:course] %>"/>
       </label>
     </div>
     <div>
-      <label for="timezone"> Timezone                              <%#Make this a list to choose from; only choice only%>
+      <label for="timezone"> Timezone                              <%#Make this a list to choose from; one choice only%>
         <input type="timezone" id="timezone" name="timezone" value="<%= params[:timezone] %>"/>
       </label>
     </div>
@@ -52,14 +52,6 @@
       </label>
     </div>
     <button type="submit">Save changes</button>                     <%#Add log out button%>
+    <button><a href="#">Cancel</a></button>                         <%# To be implemented. Redirect to /profile/:id%>
   </form>
-
-  <div id="">
-    <nav class="horizontal-bar buttons">
-      <ul>
-        <h4>Already have an account?</h4>
-        <li><a href="/login">Login</a></li>
-      </ul>
-    </nav>
-  </div>
 </main>

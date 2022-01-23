@@ -67,8 +67,8 @@ class DatabasePersistence
         u.preferred_name,
         u.slack_name,
         u.about_me,
-        c.code AS course,
         t.name AS track,
+        c.code AS course,
         ti.name AS timezone
       FROM users u
         LEFT JOIN tracks t ON u.track_id = t.id
@@ -93,12 +93,12 @@ class DatabasePersistence
         u.preferred_name,
         u.slack_name,
         u.about_me,
-        c.code AS course,
         t.name AS track,
+        c.code AS course,
         ti.name AS timezone
       FROM users u
-        LEFT JOIN courses c ON u.course_id = c.id
         LEFT JOIN tracks t ON u.track_id = t.id
+        LEFT JOIN courses c ON u.course_id = c.id
         LEFT JOIN timezones ti ON u.timezone_id = ti.id
       WHERE u.email = $1
     SQL
@@ -109,16 +109,16 @@ class DatabasePersistence
   end
 
   # ------ updates user data based on user id | called in '/profile/:id/edit' route
-  def update_user_data(id, preferred_name, slack_name, course, track, timezone, about_me)
+  def update_user_data(id, preferred_name, slack_name, track, course, timezone, about_me)
     sql = <<~SQL
       UPDATE users
         SET preferred_name = $2, slack_name = $3,
-            course_id = $4, track_id = $5,
+            track_id = $4, course_id = $5, 
             timezone_id = $6, about_me = $7
         WHERE id = $1
     SQL
 
-    query(sql, id, preferred_name, slack_name, course, track, timezone, about_me)
+    query(sql, id, preferred_name, slack_name, track, course, timezone, about_me)
   end
 
   # ------ updates user preferences table based on user id | called in 'profile/edit' route
