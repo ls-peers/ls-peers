@@ -16,6 +16,11 @@
   <h2>Create an account</h2>
   <form method="post" action="/signup">
     <div>
+      <label for="full_name"> Full name
+        <input type="full_name" id="full_name" name="full_name" />
+      </label>
+    </div>
+    <div>
       <label for="email"> Email address
         <input name="email" id="email" value="<%= params[:email] %>"/>
       </label>
@@ -23,11 +28,6 @@
     <div>
       <label for="password"> Password
         <input type="password" id="password" name="password" />
-      </label>
-    </div>
-    <div>
-      <label for="full_name"> Full name
-        <input type="full_name" id="full_name" name="full_name" />
       </label>
     </div>
     <button type="submit">Create account</button>

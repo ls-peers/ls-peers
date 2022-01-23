@@ -20,7 +20,7 @@ class DatabasePersistence
     @db.exec_params(statement, params)
   end
 
-  # ------ retrieves user id by provided user email ------------ NO BUGS
+  # ------ retrieves user id by provided user email
   def get_id_by_email(email)
     sql = <<~SQL
       SELECT id
@@ -33,7 +33,7 @@ class DatabasePersistence
     result.first["id"]                      # "e45f23ec-e54f..." | if used as 'result.first' returns {"id"=>"e45f23ec-e54f..."}
   end
 
-  # ------ adds new record to db, using data provided by user ------------ NO BUGS
+  # ------ adds new record to db, using data provided by user
   def add_new_user(email, password, full_name)       
     sql = <<~SQL
       INSERT INTO users(email, password, full_name)
@@ -43,7 +43,7 @@ class DatabasePersistence
     query(sql, email, password, full_name)
   end
 
-  # ------- retrieves user password by provided email ------------ NO BUGS
+  # ------- retrieves user password by provided email
   def get_password_by_email(email)
     sql = <<~SQL
       SELECT password
@@ -108,7 +108,7 @@ class DatabasePersistence
     tuple_to_user(tuple)
   end
 
-  # ------ updates user data based on user id | called in '/profile/:id/edit' route
+  # ------ updates user data based on user id
   def update_user_data(id, preferred_name, slack_name, track, course, timezone, about_me)
     sql = <<~SQL
       UPDATE users
@@ -121,7 +121,7 @@ class DatabasePersistence
     query(sql, id, preferred_name, slack_name, track, course, timezone, about_me)
   end
 
-  # ------ updates user preferences table based on user id | called in 'profile/edit' route
+  # ------ updates user preferences table based on user id
   # --> trying to handle several preferences simultaneously...
   # def update_user_preferences(id, *preferences)
   #   sql = <<~SQL
@@ -131,7 +131,7 @@ class DatabasePersistence
   #   query(sql, id, preferences)
   # end
 
-  # ------ updates user preferences table based on user id | called in 'profile/edit' route
+  # ------ updates user preferences table based on user id
   # --> this version can only handle one preference
   def update_user_preferences(id, preference)
     sql = <<~SQL

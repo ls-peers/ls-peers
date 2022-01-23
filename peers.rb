@@ -58,14 +58,6 @@ get "/" do
   erb :index
 end
 
-# Test route, delete when done with profile route
-get "/test/profile/:id" do
-  user_id = params[:id]
-  @user = @storage.get_user_by_id(user_id)
-
-  erb :profile, layout: :footer_layout
-end
-
 get "/signup" do
   erb :signup_test, layout: :footer_layout
 end
