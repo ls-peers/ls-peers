@@ -122,7 +122,7 @@ end
 get "/profile/:id" do
   user_id = params[:id]
   @user = @storage.get_user_by_id(user_id)
-  if is_user_login?(@user.id, @user.email)
+  if is_user_login?(@user.id, @user.email)               # implemented as:  id == @storage.get_id_by_email(email)
     erb :profile, layout: :footer_layout
   else
     puts "Sorry, you must be login to view this content"
@@ -130,41 +130,44 @@ get "/profile/:id" do
   end
 end
 
-get "/profile/edit" do
+get "/profile/:id/edit" do
+  user_id = params[:id]
+  @user = @storage.get_user_by_id(user_id)
   erb :profile_edit_test, layout: :footer_layout
 end
 
-post "/profile/edit" do                # Shall we make this a PUT route instead (see Notions comments on routes section)
+post "/profile/:id/edit" do                # Shall we make this a PUT route instead (see Notions comments on routes section)
   user_id = params[:id]
   preferred_name = params[:preferred_name]
   slack_name = params[:slack_name]
-  timezone = params[:timezone]
-  course = params[:course]
   track = params[:track]
-  about_me = params[:about_me]
+  course = params[:course]
+  timezone = params[:timezone]
   preferences = params[:preferences]
+  about_me = params[:about_me]
 
   if preferred_name.size == 0
-    puts "Please enter a valid email password"
+    puts "Please enter a valid preferred name"
     erb :profile_edit_test, layout: :footer_layout
   elsif slack_name.size == 0
-    puts "Please enter a valid email slack name"
-    erb :profile_edit_test, layout: :footer_layout
-  elsif timezone.size == 0
-    puts "Please enter a valid email timezone"
-    erb :profile_edit_test, layout: :footer_layout
-  elsif course.size == 0
-    puts "Please enter a valid email password"
+    puts "Please enter a valid slack name"
     erb :profile_edit_test, layout: :footer_layout
   elsif track.size == 0
-    puts "Please enter a valid email password"
+    puts "Please enter a valid track"
+    erb :profile_edit_test, layout: :footer_layout
+  elsif course.size == 0
+    puts "Please enter a valid course"
+    erb :profile_edit_test, layout: :footer_layout
+  elsif timezone.size == 0
+    puts "Please enter a valid timezone"
     erb :profile_edit_test, layout: :footer_layout
   elsif preferences.size == 0
-    puts "Please enter a valid email password"
+    puts "Please enter a valid preference"
     erb :profile_edit_test, layout: :footer_layout
   else
-    @storage.update_user_data(user_id, preferred_name, slack_name, timezone, course, track, about_me)
+    @storage.update_user_data(user_id, preferred_name, slack_name, track, course, timezone, about_me)
     @storage.update_user_preferences(user_id, preferences)
+    @user = @storage.get_user_by_id(user_id)
     erb :profile, layout: :footer_layout
   end
 end

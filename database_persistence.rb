@@ -108,7 +108,7 @@ class DatabasePersistence
     tuple_to_user(tuple)
   end
 
-  # ------ updates user data based on user id | called in 'profile/edit' route
+  # ------ updates user data based on user id | called in '/profile/:id/edit' route
   def update_user_data(id, preferred_name, slack_name, course, track, timezone, about_me)
     sql = <<~SQL
       UPDATE users
@@ -122,12 +122,23 @@ class DatabasePersistence
   end
 
   # ------ updates user preferences table based on user id | called in 'profile/edit' route
-  def update_user_preferences(id, *preferences)
+  # --> trying to handle several preferences simultaneously...
+  # def update_user_preferences(id, *preferences)
+  #   sql = <<~SQL
+  #   INSERT INTO users_preferences(user_id, preference_id)
+  #     VALUES($1, unnest(ARRAY$2))                        -- unnest(ARRAY[1,2]) -> Expands an array into a set of rows. The array's elements are read out in storage order.
+  #   SQL
+  #   query(sql, id, preferences)
+  # end
+
+  # ------ updates user preferences table based on user id | called in 'profile/edit' route
+  # --> this version can only handle one preference
+  def update_user_preferences(id, preference)
     sql = <<~SQL
     INSERT INTO users_preferences(user_id, preference_id)
-      VALUES($1, unnest(ARRAY$2))                        -- unnest(ARRAY[1,2]) -> Expands an array into a set of rows. The array's elements are read out in storage order.
+      VALUES($1, $2)
     SQL
-    query(sql, id, preferences)
+    query(sql, id, preference)
   end
 
   private
@@ -139,11 +150,11 @@ class DatabasePersistence
     full_name = tuple["full_name"]
     preferred_name = tuple["preferred_name"]
     slack_name = tuple["slack_name"]
-    about_me = tuple["about_me"]
-    course = tuple["course"]
     track = tuple["track"]
+    course = tuple["course"]
     timezone = tuple["timezone"]
+    about_me = tuple["about_me"]
 
-    User.new(id, email, password, full_name)  # Add -> preferred_name, slack_name, about_me, course, track, timezone
+    User.new(id, email, password, full_name, preferred_name, slack_name, track, course, timezone, about_me)
   end
 end

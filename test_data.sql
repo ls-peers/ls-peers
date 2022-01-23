@@ -14,9 +14,9 @@ INSERT INTO timezones (code, name)
          ('PST', 'Pacific Standard Time');
 
 INSERT INTO users (id, email, password, full_name, preferred_name, slack_name,
-                   course_id, track_id, timezone_id, about_me)
+                   track_id, course_id, timezone_id, about_me)
   VALUES ('fc10b881-d9a0-4ab1-a6fd-a102db188f49', 'scttgrhm7@gmail.com', 'ldfgkj78%^&appdKO039*', 'Scott Graham', 'Scott', 'Scott Graham',
-          2, 1, 3, 'Finishing LS and planning to do capstone in May. I like surfing and thick grey socks'),
+          1, 2, 3, 'Finishing LS and planning to do capstone in May. I like surfing and thick grey socks'),
          ('fc10b881-d9a0-4ab1-a6fd-a102db188f50', 'alonzilj@gmail.com', 'ppdK78%^&aO039*ldfgkj', 'Alonso Lobato', 'Alobato', 'Alonso Lobato',
           1, 1, 1, 'Finished back-end portion of Ruby track! I like canadian Christmas trees');
 
