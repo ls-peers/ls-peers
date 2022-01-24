@@ -1,12 +1,22 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    bcrypt (3.1.16)
+    byebug (11.1.3)
+    coderay (1.1.3)
     erubis (2.7.0)
+    method_source (1.0.0)
     multi_json (1.15.0)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
     nio4r (2.5.8)
     pg (1.2.3)
+    pry (0.13.1)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
+    pry-byebug (3.9.0)
+      byebug (~> 11.0)
+      pry (~> 0.13.0)
     puma (5.5.2)
       nio4r (~> 2.0)
     rack (2.2.3)
@@ -33,8 +43,10 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  bcrypt
   erubis
   pg
+  pry-byebug
   puma
   sinatra
   sinatra-contrib

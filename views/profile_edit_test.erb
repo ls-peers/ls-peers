@@ -1,0 +1,57 @@
+<header>
+  <a href="/">
+    <img src="/images/trapezoid_logo.svg">
+  </a>
+  <div id="top-menu">
+    <nav class="horizontal-bar buttons">
+      <ul>
+        <li><a href="#">Find peers</a></li>
+        <li><a href="/logout">Log out</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <h2>Complete your profile</h2>
+  
+  <form method="post" action="/profile/<%= @user.id %>/edit">                <%#Add new profile picture to be implemented%>
+    <div>
+      <label for="preferred_name"> Preferred name
+        <input name="preferred_name" id="preferred_name" value="<%= params[:preferred_name] %>"/>
+      </label>
+    </div>
+    <div>
+      <label for="slack_name"> Slack name
+        <input type="slack_name" id="slack_name" name="slack_name" value="<%= params[:slack_name] %>"/>
+      </label>
+    </div>
+    <div>
+      <label for="track"> Track                                    <%#Make this a list to choose from; one choice only%>
+        <input type="track" id="track" name="track" value="<%= params[:track] %>"/>
+      </label>
+    </div>
+    <div>
+      <label for="course"> Course                                  <%#Make this a list to choose from; one choice only%>
+        <input type="course" id="course" name="course" value="<%= params[:course] %>"/>
+      </label>
+    </div>
+    <div>
+      <label for="timezone"> Timezone                              <%#Make this a list to choose from; one choice only%>
+        <input type="timezone" id="timezone" name="timezone" value="<%= params[:timezone] %>"/>
+      </label>
+    </div>
+    <div>
+      <label for="preferences"> I need / I offer to pair for...    <%#Make this a list to choose from; multiple choices%>
+        <input type="preferences" id="preferences" name="preferences" value="<%= params[:preferences] %>"/>
+      </label>
+    </div>
+    <div>
+      <label for="about_me"> About me                              <%#Make this a text field%>
+        <input type="about_me" id="about_me" name="about_me" value="<%= params[:about_me] %>"/>
+      </label>
+    </div>
+    <button type="submit">Save changes</button>                     <%#Add log out button%>
+    <button><a href="#">Cancel</a></button>                         <%# To be implemented. Redirect to /profile/:id%>
+  </form>
+</main>

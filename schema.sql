@@ -21,14 +21,14 @@ CREATE TABLE timezones (
 
 CREATE TABLE users (
   id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
-  firstname varchar(25) NOT NULL CHECK (LENGTH(TRIM(BOTH ' ' FROM firstname)) > 0),       -- should we use the checks in the form instead of here?
-  lastname varchar(25),
-  slackname varchar(25) NOT NULL,
   email varchar(255) NOT NULL,
   password char(60) NOT NULL,                                                             -- it seems that BCrypt always generates 60 character hashes
-  course_id integer NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
-  track_id integer NOT NULL REFERENCES tracks(id) ON DELETE CASCADE,
-  timezone_id integer NOT NULL REFERENCES timezones(id) ON DELETE CASCADE,
+  full_name varchar(25) NOT NULL,
+  preferred_name varchar(25),
+  slack_name varchar(25),
+  track_id integer REFERENCES tracks(id) ON DELETE CASCADE,
+  course_id integer REFERENCES courses(id) ON DELETE CASCADE,
+  timezone_id integer REFERENCES timezones(id) ON DELETE CASCADE,
   about_me text,
   last_active timestamp,
   created_at timestamp NOT NULL DEFAULT NOW(),

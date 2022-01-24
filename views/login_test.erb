@@ -1,0 +1,39 @@
+<header>
+  <a href="/">
+    <img src="/images/trapezoid_logo.svg">
+  </a>
+  <div id="top-menu">
+    <nav class="horizontal-bar buttons">
+      <ul>
+        <li><a href="#">Find peers</a></li>
+        <li><a href="/logout">Log out</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <h2>Log in to your account</h2>
+  <form method="post" action="/login">
+    <div>
+      <label for="email"> Email address
+        <input name="email" id="email" value="<%= params[:email] %>"/>
+      </label>
+    </div>
+    <div>
+      <label for="password"> Password
+        <input type="password" id="password" name="password" />
+      </label>
+    </div>
+    <button type="submit">Log in</button>
+  </form>
+
+  <div id="">
+    <nav class="horizontal-bar buttons">
+      <ul>
+        <h4>Don't have an account?</h4>
+        <li><a href="/signup">Create an account</a></li>
+      </ul>
+    </nav>
+  </div>
+</main>
