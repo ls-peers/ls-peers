@@ -23,13 +23,12 @@ end
 # ----- SIGNUP HELPER METHODS
 
 def encrypt_password(password)
+  # '.to_s' to return only the encrypted password (not version, cost, salt etc.)
   BCrypt::Password.create(password).to_s
-  # BCrypt#create method returns a bunch of values for a new password (version, cost, salt...)
-  # Appending '.to_s' returns only the wanted encrypted password and not the rest of values
 end
 
 def email_in_use?(email)
-  !!@storage.get_id_by_email(email)
+  !!@storage.get_user_by_email(email)
 end
 
 def valid_email?(email)
@@ -40,10 +39,10 @@ end
 # ----- LOGIN HELPER METHODS
 
 def valid_credentials?(email, password)
-  @password = @storage.get_password_by_email(email)
+  @user = @storage.get_user_by_email(email)
 
-  if @password
-    decrypted_password = BCrypt::Password.new(@password)
+  if @user && @user.password
+    decrypted_password = BCrypt::Password.new(@user.password)
     decrypted_password == password
   else
     false
@@ -95,8 +94,7 @@ post "/login" do
 
   if valid_credentials?(email, password)
     @user = @storage.get_user_by_email(email)
-    # session can be introspected in all other routes
-    session[:user_id] = @user.id
+    session[:user_id] = @user.id # session can be introspected elsewhere for auth
     puts "Login completed"
     redirect "/profile"
   else
