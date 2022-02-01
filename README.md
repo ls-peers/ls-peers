@@ -28,3 +28,9 @@
 ### Heroku
 1) `$ heroku pg:psql -a lspeers`
 2) `lspeers::DATABASE=> \i [path to .sql]`
+
+### Scripts for full DB reload
+1) `\i ./delete_test_data.sql`
+2) `\i ./schema.sql`
+3) `\i ./load_join_tables.sql`
+4) `\i ./test_data.sql`
