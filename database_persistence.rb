@@ -20,21 +20,8 @@ class DatabasePersistence
     @db.exec_params(statement, params)
   end
 
-  # ------ retrieves user id by provided user email
-  def get_id_by_email(email)
-    sql = <<~SQL
-      SELECT id
-      FROM users
-      WHERE email = $1
-    SQL
-
-    result = query(sql, email)
-    return nil if result.ntuples == 0
-    result.first["id"]                      # "e45f23ec-e54f..." | if used as 'result.first' returns {"id"=>"e45f23ec-e54f..."}
-  end
-
   # ------ adds new record to db, using data provided by user
-  def add_new_user(email, password, full_name)       
+  def add_new_user(email, password, full_name)
     sql = <<~SQL
       INSERT INTO users(email, password, full_name)
       VALUES($1, $2, $3)
@@ -43,21 +30,8 @@ class DatabasePersistence
     query(sql, email, password, full_name)
   end
 
-  # ------- retrieves user password by provided email
-  def get_password_by_email(email)
-    sql = <<~SQL
-      SELECT password
-      FROM users
-      WHERE email = $1
-    SQL
-
-    result = query(sql, email)
-    return nil if result.ntuples == 0
-    result.first["password"]                # "$2a$12$W6A2..." | if used as 'result.first' returns {"password"=>"$2a$12$W6A2....."}
-  end
-
   # ------ retrieves all user data by provided user id
-  def get_user_by_id(id)                        
+  def get_user_by_id(id)
     sql = <<~SQL
       SELECT
         u.id,
@@ -79,7 +53,7 @@ class DatabasePersistence
 
     result = query(sql, id)
     tuple = result.first
-    tuple_to_user(tuple)
+    tuple_to_user(tuple) if tuple
   end
 
   # -------- retrieves all user data by provided user email
@@ -105,7 +79,7 @@ class DatabasePersistence
 
     result = query(sql, email)
     tuple = result.first
-    tuple_to_user(tuple)
+    tuple_to_user(tuple) if tuple
   end
 
   # ------ updates user data based on user id
@@ -113,7 +87,7 @@ class DatabasePersistence
     sql = <<~SQL
       UPDATE users
         SET preferred_name = $2, slack_name = $3,
-            track_id = $4, course_id = $5, 
+            track_id = $4, course_id = $5,
             timezone_id = $6, about_me = $7
         WHERE id = $1
     SQL
