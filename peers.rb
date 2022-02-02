@@ -56,7 +56,7 @@ get "/" do
 end
 
 get "/signup" do
-  erb :signup_test, layout: :footer_layout
+  erb :signup, layout: :footer_layout
 end
 
 post "/signup" do
@@ -65,27 +65,27 @@ post "/signup" do
   full_name = params[:full_name]
 
   if email_in_use?(email)
-    puts "An account with this email already exists, please login"     # Temp. msg to console -> flash msg to be implemented
-    erb :signup_test, layout: :footer_layout
+    session[:error] = "An account with this email already exists"
+    redirect "/signup"
   elsif !valid_email?(email)
-    puts "Please enter a valid email address"
-    erb :signup_test, layout: :footer_layout
+    session[:error] = "Please enter a valid email address"
+    redirect "/signup"
   elsif password.size == 0
-    puts "Please enter a valid email password"
-    erb :signup_test, layout: :footer_layout
+    session[:error] = "Please enter a valid email password"
+    redirect "/signup"
   elsif full_name.size == 0
-    puts "Please enter a valid full name"
-    erb :signup_test, layout: :footer_layout
+    session[:error] = "Please enter a valid full name"
+    redirect "/signup"
   else
     password = encrypt_password(password)
     @storage.add_new_user(email, password, full_name)
-    puts "Your account has been created. Please login using your credentials"
+    session[:success] = "Your account has been created. Please login using your credentials"
     redirect "/login"
   end
 end
 
 get "/login" do
-  erb :login_test, layout: :footer_layout
+  erb :login, layout: :footer_layout
 end
 
 post "/login" do
@@ -95,17 +95,15 @@ post "/login" do
   if valid_credentials?(email, password)
     @user = @storage.get_user_by_email(email)
     session[:user_id] = @user.id # session can be introspected elsewhere for auth
-    puts "Login completed"
     redirect "/profile"
   else
-    puts "Sorry, your credentials don't exist in our database. Please try again or create an account."
-    erb :login_test, layout: :footer_layout
+    session[:error] = "Wrong username or password. Please try again or create an account."
+    redirect "/login"
   end
 end
 
 get "/logout" do
   session.clear
-  puts "Logout complete"
   redirect "/"
 end
 
@@ -114,18 +112,18 @@ get "/profile" do
     @user = @storage.get_user_by_id(session[:user_id])
     erb :profile, layout: :footer_layout
   else
-    puts "Sorry, you must be login to view this content"
-    erb :login_test, layout: :footer_layout
+    session[:error] = "Sorry, you must be login to view this content"
+    erb :login, layout: :footer_layout
   end
 end
 
 get "/profile/edit" do
   if session[:user_id]
     @user = @storage.get_user_by_id(session[:user_id])
-    erb :profile_edit_test, layout: :footer_layout
+    erb :profile_edit, layout: :footer_layout
   else
-    puts "Sorry, you must be login to view this content"
-    erb :login_test, layout: :footer_layout
+    session[:error] = "Sorry, you must be login to view this content"
+    erb :login, layout: :footer_layout
   end
 end
 
@@ -143,22 +141,22 @@ post "/profile/edit" do
 
     if preferred_name.size == 0
       puts "Please enter a valid preferred name"
-      erb :profile_edit_test, layout: :footer_layout
+      erb :profile_edit, layout: :footer_layout
     elsif slack_name.size == 0
       puts "Please enter a valid slack name"
-      erb :profile_edit_test, layout: :footer_layout
+      erb :profile_edit, layout: :footer_layout
     elsif track.size == 0
       puts "Please enter a valid track"
-      erb :profile_edit_test, layout: :footer_layout
+      erb :profile_edit, layout: :footer_layout
     elsif course.size == 0
       puts "Please enter a valid course"
-      erb :profile_edit_test, layout: :footer_layout
+      erb :profile_edit, layout: :footer_layout
     elsif timezone.size == 0
       puts "Please enter a valid timezone"
-      erb :profile_edit_test, layout: :footer_layout
+      erb :profile_edit, layout: :footer_layout
     elsif preferences.size == 0
       puts "Please enter a valid preference"
-      erb :profile_edit_test, layout: :footer_layout
+      erb :profile_edit, layout: :footer_layout
     else
       @storage.update_user_data(user_id, preferred_name, slack_name, track, course, timezone, about_me)
       @storage.update_user_preferences(user_id, preferences)
@@ -167,6 +165,6 @@ post "/profile/edit" do
     end
   else
     puts "Sorry, you must be login to view this content"
-    erb :login_test, layout: :footer_layout
+    erb :login, layout: :footer_layout
   end
 end

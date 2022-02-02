@@ -1,0 +1,32 @@
+<header>
+  <a href="/">
+    <img src="/images/trapezoid_logo.svg">
+  </a>
+  <div id="top-menu">
+    <nav class="horizontal-bar buttons">
+      <ul>
+        <li><a href="/signup">Create account</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="login">
+  <div>
+    <h3>Log in</h3>
+    <% if session[:error] %>
+      <div class="flash error">
+        <p><%= session.delete(:error) %></p>
+      </div>
+    <% end %>
+  </div>
+  <form class="login" method="post" action="/login">
+    <label for="email">Email address</label>
+    <input name="email" id="email" value="<%= params[:email] %>"/>
+
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" />
+
+    <button class="create-login-account" type="submit">Log in</button>
+  </form>
+</main>
