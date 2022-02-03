@@ -97,7 +97,7 @@ post "/login" do
     session[:user_id] = @user.id # session can be introspected elsewhere for auth
     redirect "/profile"
   else
-    session[:error] = "Wrong username or password. Please try again or create an account."
+    session[:error] = "Wrong username or password."
     redirect "/login"
   end
 end
@@ -120,6 +120,11 @@ end
 get "/profile/edit" do
   if session[:user_id]
     @user = @storage.get_user_by_id(session[:user_id])
+    @tracks = @storage.get_tracks();
+    @courses = @storage.get_courses();
+    @timezones = @storage.get_timezones();
+    @preferences = @storage.get_preferences();
+
     erb :profile_edit, layout: :footer_layout
   else
     session[:error] = "Sorry, you must be login to view this content"

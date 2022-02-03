@@ -82,6 +82,38 @@ class DatabasePersistence
     tuple_to_user(tuple) if tuple
   end
 
+  def get_tracks
+    sql = <<~SQL
+      SELECT id, name FROM tracks;
+    SQL
+    result = query(sql)
+    result.to_a # yields array of hashes
+  end
+
+  def get_courses
+    sql = <<~SQL
+      SELECT id, code FROM courses;
+    SQL
+    result = query(sql)
+    result.to_a # yields array of hashes
+  end
+
+  def get_timezones
+    sql = <<~SQL
+      SELECT id, code FROM timezones;
+    SQL
+    result = query(sql)
+    result.to_a # yields array of hashes
+  end
+
+  def get_preferences
+    sql = <<~SQL
+      SELECT id, preference FROM preferences;
+    SQL
+    result = query(sql)
+    result.to_a # yields array of hashes
+  end
+
   # ------ updates user data based on user id
   def update_user_data(id, preferred_name, slack_name, track, course, timezone, about_me)
     sql = <<~SQL
