@@ -130,6 +130,7 @@ get "/profile/edit" do
     @courses = @storage.get_courses()
     @timezones = @storage.get_timezones()
     @preferences = @storage.get_preferences()
+    binding.pry
 
     erb :profile_edit, layout: :footer_layout
   else

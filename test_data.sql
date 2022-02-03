@@ -7,13 +7,6 @@ INSERT INTO users (id, email, password, full_name, preferred_name, slack_name,
          ('fc10b881-d9a0-4ab1-a6fd-a102db188f50', 'alonzilj+test@gmail.com', 'ppdK78%^&aO039*ldfgkj', 'Alonso Lobato', 'Alobato', 'Alonso Lobato',
           1, 1, 1, 'Finished back-end portion of Ruby track! I like canadian Christmas trees');
 
-INSERT INTO preferences (preference, category)
-  VALUES ('Preparing for a written assessment', 'Assessment'),
-         ('Preparing for an interview assessment', 'Assessment'),
-         ('Reviewing concepts', 'Study'),
-         ('Practicing problem solving', 'Problem solving'),
-         ('Working on a project', 'Project');
-
 INSERT INTO users_preferences(user_id, preference_id)
   VALUES ('fc10b881-d9a0-4ab1-a6fd-a102db188f49',5),
          ('fc10b881-d9a0-4ab1-a6fd-a102db188f49',4),
