@@ -109,8 +109,12 @@ end
 
 get "/profile" do
   if session[:user_id]
-    @user = @storage.get_user_by_id(session[:user_id])
-    erb :profile, layout: :footer_layout
+    @user = @storage.get_user_with_preferences_by_id(session[:user_id])
+    if @user.is_complete?
+      erb :profile, layout: :footer_layout
+    else
+      redirect "/profile/edit"
+    end
   else
     session[:error] = "Sorry, you must be login to view this content"
     erb :login, layout: :footer_layout
@@ -119,11 +123,11 @@ end
 
 get "/profile/edit" do
   if session[:user_id]
-    @user = @storage.get_user_by_id(session[:user_id])
-    @tracks = @storage.get_tracks();
-    @courses = @storage.get_courses();
-    @timezones = @storage.get_timezones();
-    @preferences = @storage.get_preferences();
+    @user = @user = @storage.get_user_with_preferences_by_id(session[:user_id])
+    @tracks = @storage.get_tracks()
+    @courses = @storage.get_courses()
+    @timezones = @storage.get_timezones()
+    @preferences = @storage.get_preferences()
 
     erb :profile_edit, layout: :footer_layout
   else
@@ -135,6 +139,11 @@ end
 post "/profile/edit" do
   if session[:user_id]
     @user = @storage.get_user_by_id(session[:user_id])
+    @tracks = @storage.get_tracks()
+    @courses = @storage.get_courses()
+    @timezones = @storage.get_timezones()
+    @preferences = @storage.get_preferences()
+
     user_id = @user.id
     preferred_name = params[:preferred_name]
     slack_name = params[:slack_name]
@@ -145,28 +154,28 @@ post "/profile/edit" do
     about_me = params[:about_me]
 
     if preferred_name.size == 0
-      puts "Please enter a valid preferred name"
+      session[:error] = "Please enter a valid preferred name"
       erb :profile_edit, layout: :footer_layout
     elsif slack_name.size == 0
-      puts "Please enter a valid slack name"
+      session[:error] = "Please enter a valid slack name"
       erb :profile_edit, layout: :footer_layout
     elsif track.size == 0
-      puts "Please enter a valid track"
+      session[:error] = "Please enter a valid track"
       erb :profile_edit, layout: :footer_layout
     elsif course.size == 0
-      puts "Please enter a valid course"
+      session[:error] = "Please enter a valid course"
       erb :profile_edit, layout: :footer_layout
     elsif timezone.size == 0
-      puts "Please enter a valid timezone"
+      session[:error] = "Please enter a valid timezone"
       erb :profile_edit, layout: :footer_layout
-    elsif preferences.size == 0
-      puts "Please enter a valid preference"
+    elsif !preferences || preferences.size == 0
+      session[:error] = "Please select at least one preference"
       erb :profile_edit, layout: :footer_layout
     else
       @storage.update_user_data(user_id, preferred_name, slack_name, track, course, timezone, about_me)
+      @storage.delete_user_preferences(user_id)
       @storage.update_user_preferences(user_id, preferences)
-      @user = @storage.get_user_by_id(user_id)
-      erb :profile, layout: :footer_layout
+      redirect "/profile"
     end
   else
     puts "Sorry, you must be login to view this content"

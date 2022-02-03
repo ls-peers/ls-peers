@@ -1,5 +1,5 @@
 <header>
-  <a href="/">
+  <a href="/profile">
     <img src="/images/trapezoid_logo.svg">
   </a>
   <div id="top-menu">
@@ -14,7 +14,7 @@
 <main id="profile">
   <div id="profile-title">
     <img id="profile-image" src="/images/portrait_circle.svg">
-    <h4 id="profile-name"><%= @user.full_name %> <%= @user.preferred_name %></h4>
+    <h4 id="profile-name"><%= @user.preferred_name || @user.full_name %></h4>
   </div>
   <div id="profile-details">
     <dl id="line-fields">
@@ -40,9 +40,11 @@
 
       <dt>Interested in</dt>
       <dd>
-        <p>
-          TODO!
-        </p>
+        <ul class="preferences">
+        <% @user.preferences.each do |preference| %>
+          <li><%= preference["preference"] %></li>
+        <% end %>
+        </ul>
       </dd>
     </div>
   </div>
