@@ -281,3 +281,7 @@ input {
 ul.preferences {
   list-style: circle;
 }
+
+#profile-image {
+  border-radius: 50%;
+}

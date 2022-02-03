@@ -23,7 +23,11 @@ class User
   end
 
   def is_complete?
-    # (@email != nil && @preferred_name != nil && @slack_name != nil && @track != nil && @course != nil && @timezone != nil)
     !!(@email && @preferred_name && @slack_name && @track && @course && @timezone)
+  end
+
+  def gravatar_url
+    hash = Digest::MD5.hexdigest(@email.downcase)
+    "https://www.gravatar.com/avatar/#{hash}"
   end
 end

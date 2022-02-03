@@ -2,6 +2,7 @@ require "sinatra"
 require "sinatra/content_for"
 require "tilt/erubis"
 require "bcrypt"
+require 'digest/md5'
 
 require_relative "database_persistence"
 
@@ -110,6 +111,7 @@ end
 get "/profile" do
   if session[:user_id]
     @user = @storage.get_user_with_preferences_by_id(session[:user_id])
+
     if @user.is_complete?
       erb :profile, layout: :footer_layout
     else

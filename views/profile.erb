@@ -13,7 +13,9 @@
 </header>
 <main id="profile">
   <div id="profile-title">
-    <img id="profile-image" src="/images/portrait_circle.svg">
+    <a href="https://en.gravatar.com/">
+      <img id="profile-image" src=<%= @user.gravatar_url || "/images/portrait_circle.svg" %>>
+    </a>
     <h4 id="profile-name"><%= @user.preferred_name || @user.full_name %></h4>
   </div>
   <div id="profile-details">
