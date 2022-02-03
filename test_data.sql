@@ -1,18 +1,5 @@
 -- Data insertion
 
-INSERT INTO courses (code, name)
-  VALUES ('RB185', 'Database applications'),
-         ('JS230', 'DOM and Asynchronous Programming with JavaScript');
-
-INSERT INTO tracks (code, name)
-  VALUES ('RB', 'Ruby'),
-         ('JS', 'Javascript');
-
-INSERT INTO timezones (code, name)
-  VALUES ('EST', 'Eastern Standard Time'),
-         ('CET', 'Central European Time'),
-         ('PST', 'Pacific Standard Time');
-
 INSERT INTO users (id, email, password, full_name, preferred_name, slack_name,
                    track_id, course_id, timezone_id, about_me)
   VALUES ('fc10b881-d9a0-4ab1-a6fd-a102db188f49', 'scttgrhm7@gmail.com', 'ldfgkj78%^&appdKO039*', 'Scott Graham', 'Scott', 'Scott Graham',

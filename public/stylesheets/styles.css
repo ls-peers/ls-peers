@@ -193,8 +193,20 @@ form.login {
   row-gap: 10px;
 }
 
-main #profile-edit {
-  grid-row: 3;
+main#profile-edit {
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr 2em;
+  row-gap: 20px;
+  max-width: 960px;
+}
+
+#profile-edit form {
+  display: grid;
+  max-width: 550px;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 2em 2em 2em 2em 2em 5em 5em 60px;
+  gap: 10px;
 }
 
 #layout footer {
