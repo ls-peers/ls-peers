@@ -21,7 +21,7 @@
       <% if @user.is_complete? %>
         Edit your profile
       <% else %>
-        Complete your profile
+        Hi <%= @user.full_name%>! Complete your profile
       <% end %>
     </h3>
     <% if session[:error] %>
