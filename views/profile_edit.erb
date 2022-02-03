@@ -1,12 +1,14 @@
 <header>
-  <a href="/">
+  <a href="/profile">
     <img src="/images/trapezoid_logo.svg">
   </a>
   <div id="top-menu">
     <nav class="horizontal-bar buttons">
       <ul>
-        <li><a href="/profile">Profile</a></li>
-        <li><a href="#">Find peers</a></li>
+        <% if @user.is_complete? %>
+          <li><a href="/profile">Profile</a></li>
+          <li><a href="#">Find peers</a></li>
+        <% end %>
         <li><a href="/logout">Log out</a></li>
       </ul>
     </nav>
@@ -14,46 +16,90 @@
 </header>
 
 <main id="profile-edit">
-  <h3>Edit your profile</h3>
+  <div>
+    <h3>
+      <% if @user.is_complete? %>
+        Edit your profile
+      <% else %>
+        Complete your profile
+      <% end %>
+    </h3>
+    <% if session[:error] %>
+      <div class="flash error">
+        <p><%= session.delete(:error) %></p>
+      </div>
+    <% end %>
+  </div>
+
   <form method="post" action="/profile/edit">
     <label for="preferred_name">Preferred name</label>
-    <input name="preferred_name" id="preferred_name" value="<%= params[:preferred_name] %>"/>
+    <input name="preferred_name" id="preferred_name" value="<%= params[:preferred_name] || @user.preferred_name %>"/>
 
     <label for="slack_name">Slack name</label>
-    <input type="slack_name" id="slack_name" name="slack_name" value="<%= params[:slack_name] %>"/>
+    <input type="slack_name" id="slack_name" name="slack_name" value="<%= params[:slack_name] || @user.slack_name %>"/>
 
     <label for="track">Track</label>
     <select id="track" name="track">
       <% @tracks.each do |track| %>
-        <option value=<%= track["id"] %>><%= track["name"] %></option>
+        <option
+          value=<%= track["id"] %>
+          <% if track["name"] == @user.track %>
+            <%= "selected" %>
+          <% end %>
+        >
+          <%= track["name"] %>
+        </option>
       <% end %>
     </select>
 
     <label for="course">Course</label>
     <select id="course" name="course">
       <% @courses.each do |course| %>
-        <option value=<%= course["id"] %>><%= course["code"] %></option>
+        <option
+          value=<%= course["id"] %>
+          <% if course["code"] == @user.course %>
+            <%= "selected" %>
+          <% end %>
+        >
+          <%= course["code"] %>
+        </option>
       <% end %>
     </select>
 
     <label for="timezone">Timezone</label>
       <select id="timezone" name="timezone">
       <% @timezones.each do |timezone| %>
-        <option value=<%= timezone["id"] %>><%= timezone["code"] %></option>
+        <option
+          value=<%= timezone["id"] %>
+          <% if timezone["name"] == @user.timezone %>
+            <%= "selected" %>
+          <% end %>
+        >
+          <%= timezone["code"] %>
+        </option>
       <% end %>
     </select>
 
-    <label for="preferences">I am...</label>
-    <select name="preferences" id="preferences" class="form-field input" multiple>
+    <label for="preferences[]">I am...</label>
+    <select name="preferences[]" id="preferences" class="form-field input" multiple>
       <% @preferences.each do |preference| %>
-        <option value=<%= preference["id"] %>><%= preference["preference"] %></option>
+        <option
+          value=<%= preference["id"] %>
+          <% if @user.has_preference?(preference["id"]) %>
+            <%= "selected" %>
+          <% end %>
+        >
+          <%= preference["preference"] %>
+        </option>
       <% end %>
     </select>
 
-    <label for="about_me">About me</label>                              <%#Make this a text field%>
-    <input type="about_me" id="about_me" name="about_me" value="<%= params[:about_me] %>"/>
+    <label for="about_me">About me</label>
+    <input type="about_me" id="about_me" name="about_me" value="<%= params[:about_me] || @user.about_me %>"/>
 
     <button type="submit">Save changes</button>
-    <button><a href="/profile">Cancel</a></button>
+    <% if @user.is_complete? %>
+      <button><a href="/profile">Cancel</a></button>
+    <% end %>
   </form>
 </main>

@@ -56,6 +56,13 @@ class DatabasePersistence
     tuple_to_user(tuple) if tuple
   end
 
+  def get_user_with_preferences_by_id(user_id)
+    user = self.get_user_by_id(user_id)
+    preferences = self.get_user_preferences(user_id)
+    user.preferences=(preferences)
+    user
+  end
+
   # -------- retrieves all user data by provided user email
   def get_user_by_email(email)
     sql = <<~SQL
@@ -82,6 +89,18 @@ class DatabasePersistence
     tuple_to_user(tuple) if tuple
   end
 
+  def get_user_preferences(user_id)
+    sql = <<~SQL
+      SELECT p.id, p.preference, p.category
+      FROM users_preferences up
+        JOIN preferences p ON up.preference_id = p.id
+      WHERE up.user_id = $1
+      GROUP BY 1,2,3
+    SQL
+    result = query(sql, user_id)
+    result.to_a # yields array of hashes
+  end
+
   def get_tracks
     sql = <<~SQL
       SELECT id, name FROM tracks;
@@ -100,7 +119,7 @@ class DatabasePersistence
 
   def get_timezones
     sql = <<~SQL
-      SELECT id, code FROM timezones;
+      SELECT id, code, name FROM timezones;
     SQL
     result = query(sql)
     result.to_a # yields array of hashes
@@ -128,23 +147,20 @@ class DatabasePersistence
   end
 
   # ------ updates user preferences table based on user id
-  # --> trying to handle several preferences simultaneously...
-  # def update_user_preferences(id, *preferences)
-  #   sql = <<~SQL
-  #   INSERT INTO users_preferences(user_id, preference_id)
-  #     VALUES($1, unnest(ARRAY$2))                        -- unnest(ARRAY[1,2]) -> Expands an array into a set of rows. The array's elements are read out in storage order.
-  #   SQL
-  #   query(sql, id, preferences)
-  # end
+  def update_user_preferences(id, preferences)
+    sql = "INSERT INTO users_preferences(user_id, preference_id) VALUES "
+    values = preferences.map do |preference|
+      "('#{id}', #{preference})"
+    end.join(',')
+    sql = sql + values + ";"
+    query(sql)
+  end
 
-  # ------ updates user preferences table based on user id
-  # --> this version can only handle one preference
-  def update_user_preferences(id, preference)
+  def delete_user_preferences(user_id)
     sql = <<~SQL
-    INSERT INTO users_preferences(user_id, preference_id)
-      VALUES($1, $2)
+      DELETE FROM users_preferences WHERE user_id = $1
     SQL
-    query(sql, id, preference)
+    query(sql, user_id)
   end
 
   private
