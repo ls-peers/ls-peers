@@ -48,6 +48,14 @@ nav.horizontal-bar.buttons ul li a {
   color: white;
 }
 
+.btn {
+  display: inline-block;
+  padding: 10px;
+  background-color: #6666FF;
+  border-radius: 4px;
+  color: white;
+}
+
 button {
   padding: 10px;
   height: 40px;
@@ -157,7 +165,7 @@ main #profile-details {
 }
 
 main#signup {
-  overflow: hidden;
+  overflow-x: hidden;
   display: grid;
   grid-template-rows: auto 1fr 2em;
   row-gap: 20px;
@@ -178,7 +186,7 @@ button.create-login-account {
 }
 
 main#login {
-  overflow: hidden;
+  overflow-x: hidden;
   display: grid;
   grid-template-rows: auto 1fr 2em;
   row-gap: 20px;
@@ -194,7 +202,7 @@ form.login {
 }
 
 main#profile-edit {
-  overflow: hidden;
+  overflow-x: hidden;
   display: grid;
   grid-template-rows: auto 1fr 2em;
   row-gap: 20px;
@@ -208,6 +216,24 @@ main#profile-edit {
   grid-template-rows: 2em 2em 2em 2em 2em 5em 5em 60px;
   gap: 10px;
 }
+
+main#search {
+  overflow-x: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr 1fr;
+  row-gap: 20px;
+  max-width: 960px;
+}
+
+#search form {
+  display: grid;
+  max-width: 550px;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 2.5em 4em 4em 5em 60px;
+  gap: 10px;
+}
+
+
 
 #layout footer {
   grid-row: 3;
@@ -284,4 +310,10 @@ ul.preferences {
 
 #profile-image {
   border-radius: 50%;
+}
+
+#user-results {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  row-gap: 10px;
 }

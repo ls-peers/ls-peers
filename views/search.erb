@@ -1,0 +1,82 @@
+<header>
+  <a href="/profile">
+    <img src="/images/trapezoid_logo.svg">
+  </a>
+  <div id="top-menu">
+    <nav class="horizontal-bar buttons">
+      <ul>
+        <li><a href="/profile">Profile</a></li>
+        <li><a href="/logout">Log out</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="search">
+  <div>
+    <h3>Find peers!</h3>
+    <% if session[:error] %>
+      <div class="flash error">
+        <p><%= session.delete(:error) %></p>
+      </div>
+    <% end %>
+  </div>
+
+  <form method="get" action="/search">
+    <label for="tracks[]">Tracks</label>
+    <select name="tracks[]" id="tracks" class="form-field input" multiple>
+      <% @tracks.each do |track| %>
+        <option value=<%= track["id"] %>>
+          <%= track["name"] %>
+        </option>
+      <% end %>
+    </select>
+
+    <label for="courses[]">Courses</label>
+    <select name="courses[]" id="courses" class="form-field input" multiple>
+      <% @courses.each do |course| %>
+        <option value=<%= course["id"] %>>
+          <%= course["code"] %>
+        </option>
+      <% end %>
+    </select>
+
+    <label for="timezones[]">Timezones</label>
+    <select name="timezones[]" id="timezones" class="form-field input" multiple>
+      <% @timezones.each do |timezone| %>
+        <option value=<%= timezone["id"] %>>
+          <%= timezone["code"] %>
+        </option>
+      <% end %>
+    </select>
+
+    <label for="preferences[]">I am looking for peers who are...</label>
+    <select name="preferences[]" id="preferences" class="form-field input" multiple>
+      <% @preferences.each do |preference| %>
+        <option value=<%= preference["id"] %>>
+          <%= preference["preference"] %>
+        </option>
+      <% end %>
+    </select>
+
+    <button type="submit">Search</button>
+    <button><a href="/profile">Cancel</a></button>
+  </form>
+
+  <div>
+    <% if !@user_results.empty? %>
+      <nav>
+        <ul id="user-results">
+          <% @user_results.each do |user| %>
+            <li><%= user["preferred_name"]%></li>
+            <li><%= user["track"]%></li>
+            <li><%= user["course"]%></li>
+            <a class="btn" href="/profile/<%= user["id"] %>">View profile</a>
+          <% end %>
+        </ul>
+      </nav>
+    <% else %>
+      <div>No users match your search</div>
+    <% end %>
+  </div>
+</main>

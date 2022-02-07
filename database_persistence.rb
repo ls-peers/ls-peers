@@ -101,6 +101,46 @@ class DatabasePersistence
     result.to_a # yields array of hashes
   end
 
+  def get_users(tracks = [], courses = [], timezones = [], preferences = [])
+    sql = <<~SQL
+      SELECT u.id, u.preferred_name, c.code AS course, t.name AS track
+      FROM users u
+        LEFT JOIN tracks t ON u.track_id = t.id
+        LEFT JOIN courses c ON u.course_id = c.id
+        LEFT JOIN timezones tz ON u.timezone_id = tz.id
+        LEFT JOIN users_preferences up ON u.id = up.user_id
+        LEFT JOIN preferences p ON up.preference_id = p.id
+    SQL
+
+    sql += ' WHERE 1 = 1'
+    tracks.each do |track|
+      stmt = ' AND t.id = ' + track
+      sql += stmt
+    end if tracks
+    courses.each do |course|
+      stmt = ' AND c.id = ' + course
+      sql += stmt
+    end if courses
+    timezones.each do |timezone|
+      stmt = ' AND tz.id = #{timezone}'
+      sql += stmt
+    end if timezones
+
+    first = true
+    preferences.each do |preference|
+      stmt = ' AND t.id = ' + preference if first
+      stmt = ' OR t.id = ' + preference if !first
+      sql += stmt
+      first = false
+    end if preferences
+
+    sql += 'GROUP BY 1,2,3,4;'
+
+    result = query(sql)
+
+    result.to_a # yields array of hashes
+  end
+
   def get_tracks
     sql = <<~SQL
       SELECT id, name FROM tracks;

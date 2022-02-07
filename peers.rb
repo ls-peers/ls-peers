@@ -130,7 +130,6 @@ get "/profile/edit" do
     @courses = @storage.get_courses()
     @timezones = @storage.get_timezones()
     @preferences = @storage.get_preferences()
-    binding.pry
 
     erb :profile_edit, layout: :footer_layout
   else
@@ -182,6 +181,35 @@ post "/profile/edit" do
     end
   else
     puts "Sorry, you must be login to view this content"
+    erb :login, layout: :footer_layout
+  end
+end
+
+get "/search" do
+  if session[:user_id]
+    tracks = params[:tracks]
+    courses = params[:courses]
+    timezones = params[:timezones]
+    preferences = params[:preferences]
+    @user_results = @storage.get_users(tracks, courses, timezones, preferences)
+
+    @tracks = @storage.get_tracks()
+    @courses = @storage.get_courses()
+    @timezones = @storage.get_timezones()
+    @preferences = @storage.get_preferences()
+    erb :search, layout: :footer_layout
+  else
+    session[:error] = "Sorry, you must be login to view this content"
+    erb :login, layout: :footer_layout
+  end
+end
+
+get "/profile/:id" do
+  if session[:user_id]
+    @user = @storage.get_user_with_preferences_by_id(params[:id])
+    erb :other_user_profile, layout: :footer_layout
+  else
+    session[:error] = "Sorry, you must be login to view this content"
     erb :login, layout: :footer_layout
   end
 end
