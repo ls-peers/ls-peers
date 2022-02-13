@@ -122,7 +122,7 @@ class DatabasePersistence
       sql += stmt
     end if courses
     timezones.each do |timezone|
-      stmt = ' AND tz.id = #{timezone}'
+      stmt = " AND tz.id = #{timezone}"
       sql += stmt
     end if timezones
 
