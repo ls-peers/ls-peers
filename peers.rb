@@ -56,6 +56,10 @@ get "/" do
   erb :index
 end
 
+get "/about" do
+  erb :about, layout: :footer_layout
+end
+
 get "/signup" do
   erb :signup, layout: :footer_layout
 end
