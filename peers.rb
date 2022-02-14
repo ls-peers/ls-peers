@@ -125,7 +125,7 @@ end
 
 get "/profile/edit" do
   if session[:user_id]
-    @user = @user = @storage.get_user_with_preferences_by_id(session[:user_id])
+    @user = @storage.get_user_with_preferences_by_id(session[:user_id])
     @tracks = @storage.get_tracks()
     @courses = @storage.get_courses()
     @timezones = @storage.get_timezones()
