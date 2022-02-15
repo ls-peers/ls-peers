@@ -1,13 +1,14 @@
 class User
-  attr_reader :id, :email, :password, :full_name, :preferred_name, :slack_name, :track, :course, :timezone, :about_me
+  attr_reader :id, :email, :password, :full_name, :preferred_name, :last_active_epoch, :slack_name, :track, :course, :timezone, :about_me
   attr_accessor :preferences
 
-  def initialize(id, email, password='', full_name='', preferred_name = '', slack_name = '', track = '', course = '', timezone = '', about_me = '')
+  def initialize(id, email, password='', full_name='', preferred_name = '', last_active_epoch = 0, slack_name = '', track = '', course = '', timezone = '', about_me = '')
     @id = id
     @email = email
     @password = password
     @full_name = full_name
     @preferred_name = preferred_name
+    @last_active_epoch = last_active_epoch
     @slack_name = slack_name
     @track = track
     @course = course
@@ -29,5 +30,9 @@ class User
   def gravatar_url
     hash = Digest::MD5.hexdigest(@email.downcase)
     "https://www.gravatar.com/avatar/#{hash}"
+  end
+
+  def days_since_last_active
+    ((Time.now().to_i - @last_active_epoch.to_i) / (60 * 60 * 24)).to_i
   end
 end
