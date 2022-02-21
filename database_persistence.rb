@@ -112,22 +112,16 @@ class DatabasePersistence
         LEFT JOIN preferences p ON up.preference_id = p.id
     SQL
 
-    # Fix multi course/track/timezone select:
-    # Every field should be joined with AND and within the field the options joined by OR
-    # WHERE true (1 = 1)
-    # AND (track = ‘RB’ OR track = ‘JS’)
-    # AND (course= ‘JS101’ OR course = ‘RB101’ OR course = ‘RB120’....) 
-
     sql += ' WHERE 1 = 1'
 
     first = true
-    tracks.each do |track|                       # tracks array contains track_ids or track_names?
+    tracks.each do |track|
       stmt = ' AND t.id = ' + track if first
       stmt = ' OR t.id = ' + track if !first
       sql += stmt
       first = false
     end if tracks
-    
+
     first = true
     courses.each do |course|
       stmt = ' AND c.id = ' + course if first
@@ -135,7 +129,7 @@ class DatabasePersistence
       sql += stmt
       first = false
     end if courses
-    
+
     first = true
     timezones.each do |timezone|
       stmt = " AND tz.id = #{timezone}" if first
