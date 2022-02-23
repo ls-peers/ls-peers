@@ -30,7 +30,7 @@ CREATE TABLE users (
   course_id integer REFERENCES courses(id) ON DELETE CASCADE,
   timezone_id integer REFERENCES timezones(id) ON DELETE CASCADE,
   about_me text,
-  last_active timestamp,
+  last_active timestamp NOT NULL DEFAULT NOW(),
   created_at timestamp NOT NULL DEFAULT NOW(),
   updated_at timestamp
 );

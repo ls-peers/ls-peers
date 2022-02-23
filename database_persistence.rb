@@ -41,6 +41,7 @@ class DatabasePersistence
         u.preferred_name,
         u.slack_name,
         u.about_me,
+        EXTRACT(EPOCH FROM u.last_active) AS last_active_epoch,
         t.name AS track,
         c.code AS course,
         ti.name AS timezone
@@ -74,6 +75,7 @@ class DatabasePersistence
         u.preferred_name,
         u.slack_name,
         u.about_me,
+        EXTRACT(EPOCH FROM u.last_active) AS last_active_epoch,
         t.name AS track,
         c.code AS course,
         ti.name AS timezone
@@ -179,11 +181,23 @@ class DatabasePersistence
       UPDATE users
         SET preferred_name = $2, slack_name = $3,
             track_id = $4, course_id = $5,
-            timezone_id = $6, about_me = $7
+            timezone_id = $6, about_me = $7,
+            updated_at = NOW()
         WHERE id = $1
     SQL
 
     query(sql, id, preferred_name, slack_name, track, course, timezone, about_me)
+  end
+
+  # ------ updates user last active timestamp
+  def update_user_last_active(id)
+    sql = <<~SQL
+      UPDATE users
+        SET last_active = NOW(), updated_at = NOW()
+      WHERE id = $1
+    SQL
+
+    query(sql, id)
   end
 
   # ------ updates user preferences table based on user id
@@ -212,11 +226,12 @@ class DatabasePersistence
     full_name = tuple["full_name"]
     preferred_name = tuple["preferred_name"]
     slack_name = tuple["slack_name"]
+    last_active_epoch = tuple["last_active_epoch"]
     track = tuple["track"]
     course = tuple["course"]
     timezone = tuple["timezone"]
     about_me = tuple["about_me"]
 
-    User.new(id, email, password, full_name, preferred_name, slack_name, track, course, timezone, about_me)
+    User.new(id, email, password, full_name, preferred_name, last_active_epoch, slack_name, track, course, timezone, about_me)
   end
 end

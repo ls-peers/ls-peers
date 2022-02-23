@@ -124,6 +124,7 @@ main #profile-title {
   display: grid;
   grid-template-columns: 100px 1fr;
   gap: 20px;
+  margin-bottom: 30px;
 }
 
 #profile-title #profile-image {
@@ -321,6 +322,14 @@ ul.preferences {
   grid-template-columns: 1fr 1fr 1fr 1fr;
   row-gap: 10px;
 }
+
+.vertically-center {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+#last-active {
+  font-style: italic;
 
 #team-selfie {
   max-width: 75%;

@@ -100,6 +100,7 @@ post "/login" do
   if valid_credentials?(email, password)
     @user = @storage.get_user_by_email(email)
     session[:user_id] = @user.id # session can be introspected elsewhere for auth
+    @storage.update_user_last_active(@user.id)
     redirect "/profile"
   else
     session[:error] = "Wrong username or password."
@@ -108,6 +109,9 @@ post "/login" do
 end
 
 get "/logout" do
+  if session[:user_id]
+    @storage.update_user_last_active(session[:user_id])
+  end
   session.clear
   redirect "/"
 end
