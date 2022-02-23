@@ -21,6 +21,10 @@ a {
   text-decoration: none;
 }
 
+p {
+  font-size: 1.25em;
+}
+
 footer nav ul li a {
   color: rgb(183, 183, 183);
 }
@@ -326,4 +330,13 @@ ul.preferences {
 
 #last-active {
   font-style: italic;
+
+#team-selfie {
+  max-width: 75%;
+}
+
+#about-us {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 20px;
 }
