@@ -115,23 +115,35 @@ class DatabasePersistence
     SQL
 
     sql += ' WHERE 1 = 1'
+
+    first = true
     tracks.each do |track|
-      stmt = ' AND t.id = ' + track
+      stmt = ' AND t.id = ' + track if first
+      stmt = ' OR t.id = ' + track if !first
       sql += stmt
+      first = false
     end if tracks
+
+    first = true
     courses.each do |course|
-      stmt = ' AND c.id = ' + course
+      stmt = ' AND c.id = ' + course if first
+      stmt = ' OR c.id = ' + course if !first
       sql += stmt
+      first = false
     end if courses
+
+    first = true
     timezones.each do |timezone|
-      stmt = " AND tz.id = #{timezone}"
+      stmt = " AND tz.id = #{timezone}" if first
+      stmt = " OR tz.id = #{timezone}" if !first
       sql += stmt
+      first = false
     end if timezones
 
     first = true
     preferences.each do |preference|
-      stmt = ' AND t.id = ' + preference if first
-      stmt = ' OR t.id = ' + preference if !first
+      stmt = ' AND p.id = ' + preference if first
+      stmt = ' OR p.id = ' + preference if !first
       sql += stmt
       first = false
     end if preferences
