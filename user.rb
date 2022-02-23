@@ -4,6 +4,7 @@ class User
 
   def initialize(id, email, password='', full_name='', preferred_name = '', last_active_epoch = 0, slack_name = '', track = '', course = '', timezone = '', about_me = '')
     @id = id
+    @url_id = @id.split('-')[-1]
     @email = email
     @password = password
     @full_name = full_name

@@ -34,3 +34,13 @@
 2) `\i ./schema.sql`
 3) `\i ./load_join_tables.sql`
 4) `\i ./test_data.sql`
+
+## Installing posgres on new machine
+* `$ brew install postgres`
+* `$ brew tap homebrew/services`
+* `$ brew services start postgresql` 
+* `$ psql postgres`
+
+### Create new db
+* `$ createdb [name]`
+
