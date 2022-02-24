@@ -57,9 +57,43 @@ class DatabasePersistence
     tuple_to_user(tuple) if tuple
   end
 
+    # ------ retrieves all user data by provided user id
+    def get_user_by_partial_id(partial_id)
+      sql = <<~SQL
+        SELECT
+          u.id,
+          u.email,
+          u.password,
+          u.full_name,
+          u.preferred_name,
+          u.slack_name,
+          u.about_me,
+          EXTRACT(EPOCH FROM u.last_active) AS last_active_epoch,
+          t.name AS track,
+          c.code AS course,
+          ti.name AS timezone
+        FROM users u
+          LEFT JOIN tracks t ON u.track_id = t.id
+          LEFT JOIN courses c ON u.course_id = c.id
+          LEFT JOIN timezones ti ON u.timezone_id = ti.id
+        WHERE u.id::TEXT LIKE $1
+      SQL
+  
+      result = query(sql, "%#{partial_id}")
+      tuple = result.first
+      tuple_to_user(tuple) if tuple
+    end
+
   def get_user_with_preferences_by_id(user_id)
     user = self.get_user_by_id(user_id)
     preferences = self.get_user_preferences(user_id)
+    user.preferences=(preferences)
+    user
+  end
+
+  def get_user_with_preferences_by_partial_id(partial_user_id)
+    user = self.get_user_by_partial_id(partial_user_id)
+    preferences = self.get_user_preferences(user.id)
     user.preferences=(preferences)
     user
   end

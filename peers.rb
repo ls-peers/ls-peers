@@ -216,7 +216,7 @@ end
 
 get "/profile/:id" do
   if session[:user_id]
-    @user = @storage.get_user_with_preferences_by_id(params[:id])
+    @user = @storage.get_user_with_preferences_by_partial_id(params[:id])
     erb :other_user_profile, layout: :footer_layout
   else
     session[:error] = "Sorry, you must be login to view this content"
