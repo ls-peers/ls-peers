@@ -1,16 +1,21 @@
 -- Data insertion
 
 INSERT INTO courses (code, name)
-  VALUES ('RB101', 'Programming Foundations'), 
+  VALUES ('RB101', 'Programming Foundations'),
+         ('JS101', 'Programming Foundations with JavaScript'),
          ('RB120', 'Object Oriented Programming'),
+         ('JS120', 'Object Oriented Programming with JavaScript'),
          ('RB130', 'Ruby Foundations: More Topics'),
+         ('JS130', 'More JavaScript Foundations'),
          ('LS170', 'Networking Foundations'),
          ('RB175', 'Networked Applications'),
+         ('JS175', 'Networked Applications with JavaScript'),
          ('LS180', 'Database Foundations'),
          ('RB185', 'Database Applications'),
-         ('JS202', 'HTML and CSS'),
+         ('JS185', 'Database Applications with JavaScript'),
+         ('LS202', 'HTML and CSS'),
          ('JS210', 'Fundamentals of JavaScript for Programmers'),
-         ('JS215', 'Computational Thinking and Problem Solving'),
+         ('LS215', 'Computational Thinking and Problem Solving'),
          ('JS225', 'Object Oriented JavaScript'),
          ('JS230', 'DOM and Asynchronous Programming with JavaScript');
 
@@ -21,6 +26,9 @@ INSERT INTO tracks (code, name)
 INSERT INTO timezones (code, name)
   VALUES ('GMT', 'Greenwich Mean Time'),
          ('UTC', 'Universal Coordinated Time'),
+         ('EST', 'Eastern Standard Time'),
+         ('PST', 'Pacific Standard Time'),
+         ('CST', 'Central Standard Time'),
          ('ECT', 'European Central Time'),
          ('EET', 'Eastern European Time'),
          ('ART', '(Arabic) Egypt Standard Time'),
@@ -40,11 +48,8 @@ INSERT INTO timezones (code, name)
          ('MIT', 'Midway Islands Time'),
          ('HST', 'Hawaii Standard Time'),
          ('AST', 'Alaska Standard Time'),
-         ('PST', 'Pacific Standard Time'),
          ('PNT', 'Phoenix Standard Time'),
          ('MST', 'Mountain Standard Time'),
-         ('CST', 'Central Standard Time'),
-         ('EST', 'Eastern Standard Time'),
          ('IET', 'Indiana Eastern Standard Time'),
          ('PRT', 'Puerto Rico and US Virgin Islands Time'),
          ('CNT', 'Canada Newfoundland Time'),
