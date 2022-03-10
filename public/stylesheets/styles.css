@@ -341,3 +341,9 @@ ul.preferences {
   grid-template-columns: 1fr 1fr;
   column-gap: 20px;
 }
+
+#contribute {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 20px;
+}
