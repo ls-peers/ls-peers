@@ -204,8 +204,8 @@ get "/search" do
     timezones = params[:timezones]
     preferences = params[:preferences]
     @user_results = @storage.get_users(tracks, courses, timezones, preferences)
-    # Remove logged-in user's profile from results
-    @user_results = @user_results.select { |user| user["id"] != session[:user_id] }
+    # Remove incompleted profiles and logged-in user's profile from results
+    @user_results = @user_results.select { |user| user["preferred_name"] && user["id"] != session[:user_id] }
 
     @tracks = @storage.get_tracks()
     @courses = @storage.get_courses()
