@@ -139,7 +139,7 @@ class DatabasePersistence
 
   def get_users(tracks = [], courses = [], timezones = [], preferences = [])
     sql = <<~SQL
-      SELECT u.id, u.preferred_name, c.code AS course, t.name AS track
+      SELECT u.id, u.preferred_name, c.code AS course, t.name AS track, tz.code AS timezone
       FROM users u
         LEFT JOIN tracks t ON u.track_id = t.id
         LEFT JOIN courses c ON u.course_id = c.id
@@ -168,8 +168,8 @@ class DatabasePersistence
 
     first = true
     timezones.each do |timezone|
-      stmt = " AND tz.id = #{timezone}" if first
-      stmt = " OR tz.id = #{timezone}" if !first
+      stmt = ' AND tz.id = ' + timezone if first
+      stmt = ' OR tz.id = ' + timezone if !first
       sql += stmt
       first = false
     end if timezones
@@ -182,7 +182,7 @@ class DatabasePersistence
       first = false
     end if preferences
 
-    sql += 'GROUP BY 1,2,3,4;'
+    sql += 'GROUP BY 1,2,3,4,5;'
 
     result = query(sql)
 
