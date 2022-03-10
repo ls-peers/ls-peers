@@ -60,6 +60,10 @@ get "/about" do
   erb :about, layout: :footer_layout
 end
 
+get "/contribute" do
+  erb :contribute, layout: :footer_layout
+end
+
 get "/signup" do
   erb :signup, layout: :footer_layout
 end
