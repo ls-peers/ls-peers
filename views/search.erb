@@ -71,6 +71,7 @@
             <li><%= user["preferred_name"]%></li>
             <li><%= user["track"]%></li>
             <li><%= user["course"]%></li>
+            <li><%= user["timezone"]%></li>
             <a class="btn" href="/profile/<%= user["id"].split('-')[-1] %>">View profile</a>
           <% end %>
         </ul>
